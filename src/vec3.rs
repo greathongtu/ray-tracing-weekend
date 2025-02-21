@@ -45,6 +45,10 @@ impl Vec3 {
     }
 }
 
+pub fn dot(vec1: &Vec3, vec2: &Vec3) -> f64 {
+    vec1.e[0] * vec2.e[0] + vec1.e[1] * vec2.e[1] + vec1.e[2] * vec2.e[2]
+}
+
 pub fn unit_vector(vec: &Vec3) -> Vec3 {
     let len = vec.length();
     vec.clone() / len
