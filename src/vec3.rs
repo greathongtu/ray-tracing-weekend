@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Default, Copy)]
 pub struct Vec3 {
     pub e: [f64; 3],
 }

@@ -2,6 +2,12 @@ use crate::vec3::Vec3;
 
 pub struct Color(pub Vec3);
 
+impl From<Vec3> for Color {
+    fn from(value: Vec3) -> Self {
+        Self(value)
+    }
+}
+
 pub fn write_color(pixel_color: &Color) {
     let r = pixel_color.0.x();
     let g = pixel_color.0.y();
