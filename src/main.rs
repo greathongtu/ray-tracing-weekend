@@ -22,6 +22,7 @@ fn main() {
     let camera_config = CameraConfig {
         aspect_ratio: 16.0 / 9.0,
         image_width: 400,
+        samples_per_pixel: 100,
     };
     camera_config.get_camera().render(&world);
 }
