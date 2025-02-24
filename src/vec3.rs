@@ -1,3 +1,5 @@
+use crate::rtweekend::{random_f64, random_f64_within};
+
 #[derive(Debug, Clone, Default, Copy)]
 pub struct Vec3 {
     pub e: [f64; 3],
@@ -10,14 +12,17 @@ impl Vec3 {
         Vec3 { e: [x, y, z] }
     }
 
+    #[inline]
     pub fn x(&self) -> f64 {
         self.e[0]
     }
 
+    #[inline]
     pub fn y(&self) -> f64 {
         self.e[1]
     }
 
+    #[inline]
     pub fn z(&self) -> f64 {
         self.e[2]
     }
@@ -43,15 +48,49 @@ impl Vec3 {
             ],
         }
     }
+
+    pub fn random() -> Self {
+        Vec3::new(random_f64(), random_f64(), random_f64())
+    }
+
+    pub fn random_within(min: f64, max: f64) -> Self {
+        Vec3::new(
+            random_f64_within(min, max),
+            random_f64_within(min, max),
+            random_f64_within(min, max),
+        )
+    }
 }
 
+#[inline]
 pub fn dot(vec1: &Vec3, vec2: &Vec3) -> f64 {
     vec1.e[0] * vec2.e[0] + vec1.e[1] * vec2.e[1] + vec1.e[2] * vec2.e[2]
 }
 
+#[inline]
 pub fn unit_vector(vec: &Vec3) -> Vec3 {
     let len = vec.length();
     vec.clone() / len
+}
+
+#[inline]
+pub fn random_unit_vector() -> Vec3 {
+    loop {
+        let p = Vec3::random_within(-1.0, 1.0);
+        let lensq = p.length_squared();
+        if 1e-160 < lensq && lensq <= 1.0 {
+            return p / lensq.sqrt();
+        }
+    }
+}
+
+#[inline]
+pub fn random_on_hemisphere(normal: &Vec3) -> Vec3 {
+    let on_unit_sphere = random_unit_vector();
+    if dot(&on_unit_sphere, normal) > 0.0 {
+        return on_unit_sphere;
+    }
+    -on_unit_sphere
 }
 
 impl std::ops::Add for Vec3 {

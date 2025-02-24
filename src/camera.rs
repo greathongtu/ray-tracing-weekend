@@ -4,7 +4,7 @@ use crate::{
     interval::Interval,
     ray::Ray,
     rtweekend::random_f64,
-    vec3::{Point3, Vec3, unit_vector},
+    vec3::{Point3, Vec3, random_on_hemisphere, unit_vector},
 };
 
 pub struct CameraBuilder {
@@ -145,7 +145,8 @@ impl Camera {
 
     fn ray_color(&self, r: &Ray, world: &impl Hittable) -> Color {
         if let Some(rec) = world.hit(r, Interval::new(0.0, std::f64::INFINITY)) {
-            return (0.5 * (rec.normal + Vec3::new(1.0, 1.0, 1.0))).into();
+            let direction = random_on_hemisphere(&rec.normal);
+            return 0.5 * self.ray_color(&Ray::new(&rec.p, &direction), world);
         }
 
         let unit_direction = unit_vector(r.direction());
