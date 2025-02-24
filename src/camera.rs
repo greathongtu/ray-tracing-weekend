@@ -7,13 +7,13 @@ use crate::{
     vec3::{Point3, Vec3, unit_vector},
 };
 
-pub struct CameraConfig {
+pub struct CameraBuilder {
     pub aspect_ratio: f64,
     pub image_width: u32,
     pub samples_per_pixel: u32,
 }
 
-impl Default for CameraConfig {
+impl Default for CameraBuilder {
     fn default() -> Self {
         Self {
             aspect_ratio: 1.0,
@@ -23,8 +23,23 @@ impl Default for CameraConfig {
     }
 }
 
-impl CameraConfig {
-    pub fn get_camera(&self) -> Camera {
+impl CameraBuilder {
+    pub fn aspect_ration(mut self, aspect_ratio: f64) -> CameraBuilder {
+        self.aspect_ratio = aspect_ratio;
+        self
+    }
+
+    pub fn image_width(mut self, image_width: u32) -> CameraBuilder {
+        self.image_width = image_width;
+        self
+    }
+
+    pub fn samples_per_pixel(mut self, samples_per_pixel: u32) -> CameraBuilder {
+        self.samples_per_pixel = samples_per_pixel;
+        self
+    }
+
+    pub fn build(&self) -> Camera {
         let aspect_ratio = self.aspect_ratio;
         let image_width = self.image_width;
         let samples_per_pixel = self.samples_per_pixel;
@@ -82,6 +97,10 @@ pub struct Camera {
 }
 
 impl Camera {
+    pub fn builder() -> CameraBuilder {
+        CameraBuilder::default()
+    }
+
     pub fn render(&mut self, world: &impl Hittable) {
         println!("P3");
         println!("{} {}", self.image_width, self.image_height);
