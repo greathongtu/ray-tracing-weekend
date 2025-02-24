@@ -1,6 +1,6 @@
 use crate::{
     color::{Color, write_color},
-    hittable::{HitRecord, Hittable},
+    hittable::Hittable,
     interval::Interval,
     ray::Ray,
     rtweekend::random_f64,
@@ -125,9 +125,7 @@ impl Camera {
     }
 
     fn ray_color(&self, r: &Ray, world: &impl Hittable) -> Color {
-        let mut rec = HitRecord::default();
-
-        if world.hit(r, Interval::new(0.0, std::f64::INFINITY), &mut rec) {
+        if let Some(rec) = world.hit(r, Interval::new(0.0, std::f64::INFINITY)) {
             return (0.5 * (rec.normal + Vec3::new(1.0, 1.0, 1.0))).into();
         }
 

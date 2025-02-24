@@ -12,14 +12,14 @@ pub struct Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, r: &Ray, ray_t: Interval, rec: &mut HitRecord) -> bool {
+    fn hit(&self, r: &Ray, ray_t: Interval) -> Option<HitRecord> {
         let oc = self.center - *r.origin();
         let a = r.direction().length_squared();
         let h = dot(r.direction(), &oc);
         let c = oc.length_squared() - self.radius * self.radius;
         let discriminant = h * h - a * c;
         if discriminant < 0 as f64 {
-            return false;
+            return None;
         }
         let sqrtd = discriminant.sqrt();
 
@@ -28,16 +28,16 @@ impl Hittable for Sphere {
         if !ray_t.surrounds(root) {
             root = (h + sqrtd) / a;
             if !ray_t.surrounds(root) {
-                return false;
+                return None;
             }
         }
-
+        let mut rec = HitRecord::default();
         rec.t = root;
         rec.p = r.at(rec.t);
         let outward_normal = (rec.p - self.center) / self.radius;
         rec.set_face_normal(r, &outward_normal);
 
-        return true;
+        return Some(rec);
     }
 }
 
