@@ -9,6 +9,12 @@ impl Default for Color {
     }
 }
 
+impl Color {
+    pub fn new(r: f64, g: f64, b: f64) -> Self {
+        Color(Vec3::new(r, g, b))
+    }
+}
+
 impl std::ops::AddAssign for Color {
     fn add_assign(&mut self, rhs: Self) {
         self.0.e[0] += rhs.0.e[0];

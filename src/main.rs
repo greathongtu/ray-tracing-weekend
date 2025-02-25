@@ -12,7 +12,7 @@ mod vec3;
 use camera::Camera;
 use color::Color;
 use hittable_list::HittableList;
-use material::{Lambertian, Material, Metal};
+use material::{Dielectric, Lambertian, Material, Metal};
 use sphere::Sphere;
 use std::rc::Rc;
 use vec3::{Point3, Vec3};
@@ -24,8 +24,8 @@ fn main() {
         Some(Rc::new(Lambertian::new(&Color(Vec3::new(0.8, 0.8, 0.0)))));
     let material_center: Option<Rc<dyn Material>> =
         Some(Rc::new(Lambertian::new(&Color(Vec3::new(0.1, 0.2, 0.5)))));
-    let material_left: Option<Rc<dyn Material>> =
-        Some(Rc::new(Metal::new(&Color(Vec3::new(0.8, 0.8, 0.8)), 0.3)));
+    let material_left: Option<Rc<dyn Material>> = Some(Rc::new(Dielectric::new(1.50)));
+    let material_bubble: Option<Rc<dyn Material>> = Some(Rc::new(Dielectric::new(1.00 / 1.50)));
     let material_right: Option<Rc<dyn Material>> =
         Some(Rc::new(Metal::new(&Color(Vec3::new(0.8, 0.6, 0.2)), 1.0)));
 
@@ -43,6 +43,11 @@ fn main() {
         &Point3::new(-1.0, 0.0, -1.0),
         0.5,
         material_left,
+    )));
+    world.add(Rc::new(Sphere::new(
+        &Point3::new(-1.0, 0.0, -1.0),
+        0.4,
+        material_bubble,
     )));
     world.add(Rc::new(Sphere::new(
         &Point3::new(1.0, 0.0, -1.0),
