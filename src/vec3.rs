@@ -60,6 +60,11 @@ impl Vec3 {
             random_f64_within(min, max),
         )
     }
+
+    pub fn near_zero(&self) -> bool {
+        let s = 1e-8;
+        self.e[0].abs() < s && self.e[1].abs() < s && self.e[2].abs() < s
+    }
 }
 
 #[inline]
@@ -91,6 +96,11 @@ pub fn random_on_hemisphere(normal: &Vec3) -> Vec3 {
         return on_unit_sphere;
     }
     -on_unit_sphere
+}
+
+#[inline]
+pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
+    *v - (2.0 * dot(v, n) * (*n))
 }
 
 impl std::ops::Add for Vec3 {

@@ -1,5 +1,6 @@
 use crate::{interval::Interval, vec3::Vec3};
 
+#[derive(Clone, Copy)]
 pub struct Color(pub Vec3);
 
 impl Default for Color {
@@ -32,6 +33,20 @@ impl std::ops::Mul<Color> for f64 {
     fn mul(self, rhs: Color) -> Self::Output {
         Color(Vec3 {
             e: [self * rhs.0.e[0], self * rhs.0.e[1], self * rhs.0.e[2]],
+        })
+    }
+}
+
+impl std::ops::Mul<Color> for Color {
+    type Output = Color;
+
+    fn mul(self, rhs: Color) -> Self::Output {
+        Color(Vec3 {
+            e: [
+                self.0.e[0] * rhs.0.e[0],
+                self.0.e[1] * rhs.0.e[1],
+                self.0.e[2] * rhs.0.e[2],
+            ],
         })
     }
 }
