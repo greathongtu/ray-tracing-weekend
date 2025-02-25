@@ -42,10 +42,22 @@ impl From<Vec3> for Color {
     }
 }
 
+#[inline]
+pub fn linear_to_gamma(linear_component: f64) -> f64 {
+    if linear_component > 0.0 {
+        return linear_component.sqrt();
+    }
+    0.0
+}
+
 pub fn write_color(pixel_color: &Color) {
     let r = pixel_color.0.x();
     let g = pixel_color.0.y();
     let b = pixel_color.0.z();
+
+    let r = linear_to_gamma(r);
+    let g = linear_to_gamma(g);
+    let b = linear_to_gamma(b);
 
     const INTENSITY: Interval = Interval::new(0.0, 0.999);
     let rbyte = (255.999 * INTENSITY.clamp(r)) as u8;
