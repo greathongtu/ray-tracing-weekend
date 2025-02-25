@@ -3,7 +3,7 @@ use crate::{
     hittable::Hittable,
     interval::Interval,
     ray::Ray,
-    rtweekend::random_f64,
+    rtweekend::{degrees_to_radians, random_f64},
     vec3::{Point3, Vec3, unit_vector},
 };
 
@@ -12,6 +12,7 @@ pub struct CameraBuilder {
     pub image_width: u32,
     pub samples_per_pixel: u32,
     pub max_depth: u32,
+    pub vfov: f64,
 }
 
 impl Default for CameraBuilder {
@@ -21,6 +22,7 @@ impl Default for CameraBuilder {
             image_width: 100,
             samples_per_pixel: 10,
             max_depth: 10,
+            vfov: 90.0,
         }
     }
 }
@@ -46,11 +48,17 @@ impl CameraBuilder {
         self
     }
 
+    pub fn vfov(mut self, vfov: f64) -> CameraBuilder {
+        self.vfov = vfov;
+        self
+    }
+
     pub fn build(&self) -> Camera {
         let aspect_ratio = self.aspect_ratio;
         let image_width = self.image_width;
         let samples_per_pixel = self.samples_per_pixel;
         let max_depth = self.max_depth;
+        let vfov = self.vfov;
 
         // image
         let image_height = (image_width as f64 / aspect_ratio) as u32;
@@ -60,7 +68,9 @@ impl CameraBuilder {
 
         // Determine viewport dimensions
         let focal_length = 1.0;
-        let viewport_height = 2.0;
+        let theta = degrees_to_radians(vfov);
+        let h = (theta / 2.0).tan();
+        let viewport_height = 2.0 * h * focal_length;
         let real_aspet_ratio = image_width as f64 / image_height as f64;
         let viewport_wideth = viewport_height * real_aspet_ratio;
 
@@ -82,6 +92,7 @@ impl CameraBuilder {
             image_width,
             samples_per_pixel,
             max_depth,
+            vfov,
             image_height,
             pixel_samples_scale: 1.0 / samples_per_pixel as f64,
             center,
@@ -97,6 +108,7 @@ pub struct Camera {
     pub image_width: u32,
     pub samples_per_pixel: u32,
     pub max_depth: u32,
+    pub vfov: f64,
 
     image_height: u32,
     pixel_samples_scale: f64,
